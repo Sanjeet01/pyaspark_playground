@@ -2,9 +2,9 @@ import unittest
 
 from pyspark.shell import spark
 from pyspark.sql.functions import col
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType, DoubleType
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType
 
-from src import ingest
+from src.data_jobs import ingest
 
 
 class TestIngest(unittest.TestCase):
