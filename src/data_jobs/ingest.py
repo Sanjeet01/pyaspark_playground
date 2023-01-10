@@ -1,7 +1,6 @@
 import pyspark
 from pyspark.shell import spark
 from pyspark.sql import DataFrame
-from src.configs.table_schema import csv_schema, json_schema
 
 
 def read_data(folder_path: str, file_format: str, schema: str) -> DataFrame:
@@ -18,12 +17,19 @@ def read_data(folder_path: str, file_format: str, schema: str) -> DataFrame:
 
 
 if __name__ == "__main__":
+    from src.configs.table_schema import csv_schema, json_schema
+
     csv_path = "../../data/happiness_index_data"
     json_path = "../../data/recipes_data_json"
-    # df_csv = read_data(csv_path, "csv", csv_schema)
-    # df_csv.show(5)
-    df_json = read_data(json_path, "json", json_schema)
-    print(df_json.count())
-    df_json.show(5)
-    print(df_json.schema)
+    df_csv = read_data(csv_path, "csv", csv_schema)
+    df_csv.show(5)
+    # print(df_csv.count())
+    # print(type(csv_schema))
+    # print(str(csv_schema))
+    print(df_csv.columns.count())
+
+    # df_json = read_data(json_path, "json", json_schema)
+    # print(df_json.count())
+    # df_json.show(5)
+    # print(df_json.schema)
 

@@ -3,16 +3,6 @@
 """
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType
 
-aa_data_job = {
-    "paths": {
-        "input_data_path": "data/source_data",
-        "output_data_path": "my/dummy/path",
-        "landing_path": "data/source_data/aa_data/api_landing_data",
-        "superman_path": "data/source_data/aa_data/superman"
-    },
-    "job_parameter": {"aa_data_job": {"steps_per_floor": 21}},
-}
-
 csv_schema = StructType([StructField("Country", StringType(), True),
                          StructField("Region", StringType(), True),
                          StructField("Happiness Rank", IntegerType(), True),
@@ -25,7 +15,7 @@ csv_schema = StructType([StructField("Country", StringType(), True),
                          StructField("Trust (Government Corruption)", DoubleType(), True),
                          StructField("Generosity", DoubleType(), True),
                          StructField("Dystopia Residual", DoubleType(), True),
-                         ]),
+                         ])
 
 json_schema = StructType([StructField('cookTime', StringType(), True),
                           StructField('datePublished', StringType(), True),
