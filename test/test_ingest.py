@@ -24,18 +24,19 @@ class TestIngest(unittest.TestCase):
                              StructField("Dystopia Residual", DoubleType(), True),
                              ])
 
-    def test_read_data_csv(self, path=file_path, file_format=file_format):
-        actual_df = ingest.read_data(path, file_format)
+    def test_read_data_csv(self, path: str = file_path, file_format: str = file_format,
+                           schema: StructType = csv_schema):
+        actual_df = ingest.read_data(path, file_format, schema)
         expected_df = spark.read.csv(path, header=True)
         # print(f"count of elements in df is {actual_df.count()}, {expected_df.count()} \n")
         assert actual_df.count() == expected_df.count()
 
-    def test_csv_data_schema(self,  csv_schema=csv_schema, path=file_path, file_format=file_format):
-        actual_df = ingest.read_data(path, file_format)
-        assert actual_df.schema == csv_schema
+    def test_csv_data_schema(self,  schema=csv_schema, path=file_path, file_format=file_format):
+        actual_df = ingest.read_data(path, file_format, schema)
+        assert actual_df.schema == schema
 
     def test_compare_data_csv(self, path=file_path, file_format=file_format, schema=csv_schema):
-        actual_df = ingest.read_data(path, file_format).filter(col("Happiness Rank") <= 2)
+        actual_df = ingest.read_data(path, file_format, schema).filter(col("Happiness Rank") <= 2)
         data = [("Switzerland", "Western Europe", 1, 7.587, 0.03411, 1.39651, 1.34951, 0.94143, 0.66557, 0.41978,
                  0.29678, 2.51738),
                 ("Iceland", "Western Europe", 2, 7.561, 0.04884, 1.30232, 1.40223, 0.94784, 0.62877, 0.14145,
