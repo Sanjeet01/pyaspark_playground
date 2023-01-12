@@ -1,5 +1,5 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, regexp_replace, lower, corr, when
+from pyspark.sql.functions import col, regexp_replace, lower, corr, when, lit
 
 
 def filter_data(df: DataFrame, number: int):
@@ -12,27 +12,24 @@ def rename_columns(df: DataFrame):
     :param df:      Input Data Frame
     :return:        returns a dataframe after column name changed
     """
-    # TODO
-    # Fix this function to change the column and not the data.
-
-    new_columns = [lower(regexp_replace(col(column), " ", "_")).alias(column) for column in df.columns]
-    df = df.select(*new_columns)
+    for name in df.schema.names:
+        df = df.withColumnRenamed(name, (name.replace(' ', '_').replace('(', '').replace(')', '').lower()))
     return df
 
 
 def correlation_transform(df: DataFrame):
-    return df.withColumn(col("c_happiness_life_exp"), corr(col("Happiness Rank"), col("Health (Life Expectancy)")))\
-        .withColumn(col("c_happiness_generosity"), corr(col("Happiness Rank"), col("Generosity")))\
-        .withColumn(col("c_happiness_corruption"), corr(col("Happiness Rank"), col("Trust (Government Corruption)")))\
-        .withColumn(col("c_happiness_freedom"), corr(col("Happiness Rank"), col("Freedom")))\
-        .withColumn(col("c_happiness_economy"), corr(col("Happiness Rank"), col("Economy (GDP per Capita)")))
+    return df.withColumn("c_happiness_life_exp", lit(round(df.corr("happiness_rank", "health_life_expectancy"), 2)))\
+        .withColumn("c_happiness_generosity", lit(round(df.corr("happiness_rank", "generosity"), 2)))\
+        .withColumn("c_happiness_corruption", lit(round(df.corr("happiness_rank", "trust_government_corruption"),2)))\
+        .withColumn("c_happiness_freedom", lit(round(df.corr("happiness_rank", "freedom"), 2)))\
+        .withColumn("c_happiness_economy", lit(round(df.corr("happiness_rank", "economy_gdp_per_capita"), 2)))
 
 
 def generate_annotation(df: DataFrame):
-    return df.withColumn("annotations", when(col("Happiness Rank") <= 5, "Doing Well")
-                        .when(col("Happiness Rank") <= 10, "Still Good")
-                        .when(col("Happiness Rank") <= 50, "Could be Better")
-                        .otherwise("What are you Doing"))
+    return df.withColumn("annotations", when(col("happiness_rank") <= 5, "Doing Well")
+                         .when(col("happiness_rank") <= 10, "Still Good")
+                         .when(col("happiness_rank") <= 50, "Could be Better")
+                         .otherwise("What are you Doing"))
 
 
 

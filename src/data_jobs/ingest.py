@@ -1,9 +1,10 @@
 import pyspark
 from pyspark.shell import spark
 from pyspark.sql import DataFrame
+from pyspark.sql.types import StructType
 
 
-def read_data(folder_path: str, file_format: str, schema: str) -> DataFrame:
+def read_data(folder_path: str, file_format: str, schema: StructType) -> DataFrame:
     """
     This function reads data stored in flat files in either json or csv format and return a data frame
     :param folder_path:     Path of the file
